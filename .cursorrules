@@ -1,0 +1,5 @@
+# CloudShield Cursor Rules
+# Adhere strictly to the frozen technology stack and engineering guidelines in CLAUDE.md.
+# 1. Zero Placeholders in core logic.
+# 2. Strict allowlisted auto-remediation (no arbitrary shell execution).
+# 3. Clean separation of concerns between React frontend, FastAPI backend, and Prometheus/Docker infrastructure.
