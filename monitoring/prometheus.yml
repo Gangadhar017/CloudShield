@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+rule_files:
+  - "alert_rules.yml"
+
+scrape_configs:
+  - job_name: "test-app"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["test-app:8001", "localhost:8001", "127.0.0.1:8001"]
+
+  - job_name: "cloudshield-backend"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["backend:8000", "localhost:8000", "127.0.0.1:8000"]
