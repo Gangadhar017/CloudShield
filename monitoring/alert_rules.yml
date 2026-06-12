@@ -1,0 +1,57 @@
+groups:
+  - name: cloudshield_alerts
+    rules:
+      - alert: ApplicationUnavailable
+        expr: app_health_status == 0
+        for: 5s
+        labels:
+          severity: critical
+          resource: test-app-service
+          recommended_action: RESTART_TEST_APP
+        annotations:
+          summary: "Monitored test application health probe failed"
+          description: "app_health_status is 0. Service endpoint /health returned HTTP 500."
+
+      - alert: HighCPUUtilization
+        expr: app_cpu_usage_percent > 80
+        for: 10s
+        labels:
+          severity: high
+          resource: test-app-service
+          recommended_action: RESTART_TEST_APP
+        annotations:
+          summary: "Sustained high CPU usage detected"
+          description: "CPU usage exceeds 80% threshold (measured value > 80%)."
+
+      - alert: HighMemoryUtilization
+        expr: app_memory_usage_percent > 85
+        for: 10s
+        labels:
+          severity: high
+          resource: test-app-service
+          recommended_action: RESTART_TEST_APP
+        annotations:
+          summary: "Sustained high memory usage detected"
+          description: "Memory usage exceeds 85% threshold."
+
+      - alert: HighErrorRate
+        expr: rate(http_errors_total[1m]) > 1
+        for: 10s
+        labels:
+          severity: high
+          resource: test-app-service
+          recommended_action: RESTART_TEST_APP
+        annotations:
+          summary: "Spike in application error responses"
+          description: "HTTP error rate exceeds 1 error/sec."
+
+      - alert: HighRequestLatency
+        expr: app_request_latency_ms > 1000
+        for: 10s
+        labels:
+          severity: medium
+          resource: test-app-service
+          recommended_action: RESTART_TEST_APP
+        annotations:
+          summary: "Elevated HTTP request latency detected"
+          description: "Average latency exceeds 1000ms threshold."
