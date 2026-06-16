@@ -1,0 +1,40 @@
+policies:
+  - id: SEC-001
+    name: Public Storage Access Enabled
+    severity: high
+    target: storage_policy
+    remediation_action: FIX_SEC_001
+    recommendation: Disable public access unless explicitly required and approved for public web assets.
+    description: Storage bucket or volume policy allows open public read or write access.
+
+  - id: SEC-002
+    name: Missing Storage Encryption Requirement
+    severity: medium
+    target: storage_policy
+    remediation_action: FIX_SEC_002
+    recommendation: Enforce server-side encryption with AES-256 or KMS customer-managed keys.
+    description: Data at rest is stored unencrypted, violating baseline cloud data protection standards.
+
+  - id: SEC-003
+    name: Wildcard IAM Administrative Permissions
+    severity: critical
+    target: iam_policy
+    remediation_action: FIX_SEC_003
+    recommendation: Replace wildcard '*' permissions with specific least-privilege API actions.
+    description: IAM policy grants unrestricted '*' administrative permissions across cloud resources.
+
+  - id: SEC-004
+    name: Unrestricted Inbound Network Access on Sensitive Ports
+    severity: high
+    target: network_rule
+    remediation_action: FIX_SEC_004
+    recommendation: Restrict ingress CIDR from 0.0.0.0/0 to authorized corporate subnets or bastion ranges.
+    description: Security group or firewall exposes sensitive administrative ports (22, 3389, 5432) to the public internet.
+
+  - id: SEC-005
+    name: Privileged Execution Enabled in Container Spec
+    severity: high
+    target: container_spec
+    remediation_action: FIX_SEC_005
+    recommendation: Run container in unprivileged mode and drop unnecessary Linux capabilities.
+    description: Container specification has privileged mode enabled, granting host-level root capabilities.
