@@ -1,0 +1,34 @@
+# Hardened Reference Infrastructure Specification (Fully Compliant)
+infrastructure_version: "2026-v1"
+environment: "production"
+
+storage:
+  bucket_name: "cloudshield-customer-records"
+  public_access: false           # SEC-001 Compliant
+  encryption_required: true      # SEC-002 Compliant
+  algorithm: "AES-256"
+
+iam:
+  role_name: "AppDeployerRole"
+  actions:                       # SEC-003 Compliant (Least-privilege)
+    - "s3:GetObject"
+    - "s3:PutObject"
+    - "ec2:DescribeInstances"
+  resources:
+    - "arn:aws:s3:::cloudshield-customer-records/*"
+
+network:
+  security_group_name: "cloudshield-web-sg"
+  ingress_rules:
+    - protocol: "tcp"
+      port: 22
+      cidr: "10.0.0.0/8"          # SEC-004 Compliant (Internal VPC only)
+    - protocol: "tcp"
+      port: 5432
+      cidr: "10.0.0.0/8"          # SEC-004 Compliant
+
+container:
+  service_name: "worker-agent"
+  image: "cloudshield-worker:latest"
+  privileged: false              # SEC-005 Compliant
+  read_only_root_filesystem: true
