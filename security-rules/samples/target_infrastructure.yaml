@@ -1,0 +1,32 @@
+# Unsafe Reference Backup for 1-Click Demo Reset
+infrastructure_version: "2026-v1"
+environment: "staging"
+
+storage:
+  bucket_name: "cloudshield-customer-records"
+  public_access: true            # VIOLATION: SEC-001
+  encryption_required: false     # VIOLATION: SEC-002
+  algorithm: "NONE"
+
+iam:
+  role_name: "AppDeployerRole"
+  actions:                       # VIOLATION: SEC-003
+    - "*"
+  resources:
+    - "*"
+
+network:
+  security_group_name: "cloudshield-web-sg"
+  ingress_rules:
+    - protocol: "tcp"
+      port: 22
+      cidr: "0.0.0.0/0"          # VIOLATION: SEC-004
+    - protocol: "tcp"
+      port: 5432
+      cidr: "0.0.0.0/0"          # VIOLATION: SEC-004
+
+container:
+  service_name: "worker-agent"
+  image: "cloudshield-worker:latest"
+  privileged: true               # VIOLATION: SEC-005
+  read_only_root_filesystem: false
