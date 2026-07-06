@@ -1,0 +1,73 @@
+name: CloudShield CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  backend-test-and-eval:
+    name: Backend Pytest & Evaluation Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Run Pytest test suite
+        run: |
+          export PYTHONPATH=.
+          pytest backend/tests -v
+
+      - name: Execute Phase 9 Academic Benchmark
+        run: |
+          export PYTHONPATH=.
+          python scripts/run_evaluation.py
+
+      - name: Verify Evaluation Benchmark Artifact
+        run: |
+          test -f docs/evaluation-results.md && echo "Evaluation report successfully generated."
+
+  frontend-build:
+    name: Frontend Lint & Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: frontend/package.json
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Build frontend production bundle
+        run: npm run build
+
+  compose-validation:
+    name: Docker Compose Config Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose specification
+        run: docker compose config
