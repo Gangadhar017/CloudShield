@@ -77,4 +77,5 @@ app.include_router(audit_router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=settings.BACKEND_PORT)
+    port = int(os.environ.get("PORT", settings.BACKEND_PORT))
+    uvicorn.run(app, host="0.0.0.0", port=port)
